@@ -16,8 +16,8 @@ git checkout 1.10.0
 and the FPGA simulation tool firesim can refer to https://docs.fires.im/en/latest/FireSim-Basics.html according to your FPGA model.
 ```bash
 git clone https://github.com/firesim/firesim
- cd firesim
- git checkout 1.17.1
+cd firesim
+git checkout 1.17.1
 ./scripts/machine-launch-script.sh --prefix REPLACE_ME_USER_CONDA_LOCATION
 conda env list
 conda activate firesim
