@@ -62,7 +62,7 @@ class CustomAcceleratorModule(outer: CustomAccelerator) extends LazyRoCCModuleIm
   // }))
   val HartId = VecInit(Seq.tabulate(GlobalParams.Num_Groupcores){ i => cmd.bits.rs2(4 * (i + 1) - 1, 4 * i) })
   val sels_temp = 0.U(xLen.W)
-  val sels = VecInit(Seq.tabulate(GlobalParams.Num_Groupcores){ i => sels_temp(GlobalParams.Num_Groupcores * (i + 1) - 1, GlobalParams.Num_Groupcores * i)})
+  val sels = VecInit(Seq.tabulate(GlobalParams.Num_Groupcores){ i => sels_temp(4 * (i + 1) - 1, 4 * i)})
   val finalsels = WireInit(VecInit(sels.map{ elem =>
     VecInit((0 until elem.getWidth).map(i => elem(i).asUInt))
   }))
