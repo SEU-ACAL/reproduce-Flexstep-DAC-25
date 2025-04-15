@@ -232,11 +232,11 @@ trait DefaultTileContextType
 { this: BaseSubsystem =>
   val debugNode: IntSyncOutwardNode
   //custom node
-  val customReady_Nodes = Seq.fill(GlobalParams.Num_Groups)(Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[Bool]())))
-  val customValid_Nodes = Seq.fill(GlobalParams.Num_Groups)(Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[Bool]())))
-  val customBits_Nodes = Seq.fill(GlobalParams.Num_Groups)(Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[UInt]())))
-  val custombusy_Node = Seq.fill(GlobalParams.Num_Groups)(Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[Bool]())))
-  val customumode_Node = Seq.fill(GlobalParams.Num_Groups)(Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[Bool]())))
+  val customReady_Nodes = Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[Bool]()))
+  val customValid_Nodes = Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[Bool]()))
+  val customBits_Nodes = Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[UInt]()))
+  val custombusy_Node = Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[Bool]()))
+  val customumode_Node = Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[Bool]()))
   //Group1
   // val customReady_Nodes1 = Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[Bool]()))
   // val customValid_Nodes1 = Seq.fill(GlobalParams.Num_Groupcores)(Seq.fill(GlobalParams.Num_Groupcores)(BundleBridgeEphemeralNode[Bool]()))
@@ -345,28 +345,25 @@ trait CanAttachTile {
     }
     */
 
-    for(k <- 0 until GlobalParams.Num_Groups){
-      for(i <- 0 until GlobalParams.Num_Groupcores){
-        if(tileParams.hartId == GlobalParams.List_hartid(k)(i)){
-          for(j <- 0 until GlobalParams.Num_Groupcores){
-            context.customBits_Nodes(k)(tileParams.hartId - k * GlobalParams.Num_Groupcores)(j) := domain.tile.customMasterBits_Nodes(j)
-            context.customValid_Nodes(k)(tileParams.hartId - k * GlobalParams.Num_Groupcores)(j) := domain.tile.customMasterValid_Nodes(j)
-            domain.tile.customMasterReady_Nodes(j) := context.customReady_Nodes(k)(tileParams.hartId - k * GlobalParams.Num_Groupcores)(j)
-  
-            context.custombusy_Node(k)(tileParams.hartId - k * GlobalParams.Num_Groupcores)(j)   := domain.tile.customSlavebusy_Node(j)
-            context.customumode_Node(k)(tileParams.hartId - k * GlobalParams.Num_Groupcores)(j)  := domain.tile.customSlaveumode_Node(j)
-  
-            domain.tile.customSlaveBits_Nodes(j) := context.customBits_Nodes(k)(j)(tileParams.hartId - k * GlobalParams.Num_Groupcores)
-            domain.tile.customSlaveValid_Nodes(j) := context.customValid_Nodes(k)(j)(tileParams.hartId - k * GlobalParams.Num_Groupcores)
-            context.customReady_Nodes(k)(j)(tileParams.hartId - k * GlobalParams.Num_Groupcores) := domain.tile.customSlaveReady_Nodes(j)
-  
-            domain.tile.customMasterbusy_Node(j) := context.custombusy_Node(k)(j)(tileParams.hartId - k * GlobalParams.Num_Groupcores)
-            domain.tile.customMasterumode_Node(j) := context.customumode_Node(k)(j)(tileParams.hartId - k * GlobalParams.Num_Groupcores)
-          }
+    for(i <- 0 until GlobalParams.Num_Groupcores){
+      if(tileParams.hartId == GlobalParams.List_hartid(i)){
+        for(j <- 0 until GlobalParams.Num_Groupcores){
+          context.customBits_Nodes(tileParams.hartId)(j) := domain.tile.customMasterBits_Nodes(j)
+          context.customValid_Nodes(tileParams.hartId)(j) := domain.tile.customMasterValid_Nodes(j)
+          domain.tile.customMasterReady_Nodes(j) := context.customReady_Nodes(tileParams.hartId)(j)
+
+          context.custombusy_Node(tileParams.hartId)(j)   := domain.tile.customSlavebusy_Node(j)
+          context.customumode_Node(tileParams.hartId)(j)  := domain.tile.customSlaveumode_Node(j)
+
+          domain.tile.customSlaveBits_Nodes(j) := context.customBits_Nodes(j)(tileParams.hartId)
+          domain.tile.customSlaveValid_Nodes(j) := context.customValid_Nodes(j)(tileParams.hartId)
+          context.customReady_Nodes(j)(tileParams.hartId) := domain.tile.customSlaveReady_Nodes(j)
+
+          domain.tile.customMasterbusy_Node(j) := context.custombusy_Node(j)(tileParams.hartId)
+          domain.tile.customMasterumode_Node(j) := context.customumode_Node(j)(tileParams.hartId)
         }
       }
     }
-    
 
     //Group2 connnect
     // for(i <- 0 until GlobalParams.Num_Groupcores){
