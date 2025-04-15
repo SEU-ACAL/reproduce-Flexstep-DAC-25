@@ -139,7 +139,7 @@ class RocketTileModuleImp(outer: RocketTile) extends BaseTileModuleImp(outer)
     outer.customSlaveReady_Nodes(i).bundle := core.io.custom_FIFOin(i).ready
     outer.customSlavebusy_Node(i).bundle := core.io.score_busy_out(i)
     outer.customSlaveumode_Node(i).bundle := core.io.score_umode_out(i)
-  }  
+  }    
 
   
   /*
